@@ -5,12 +5,10 @@ import { useEffect, useState } from "react";
 export default function useFetchPlainData() {
 
 	const [data, setData] = useState([]);
-	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<Error | null>(null);
 
 	useEffect(() => {
 		async function fetchData() {
-			setLoading(true);
 			setError(null);
 
 			try {
@@ -27,14 +25,15 @@ export default function useFetchPlainData() {
 				if (error instanceof Error) {
 					setError(error);
 				}
-			} finally {
-				setLoading(false);
 			}
 		}
 
 		fetchData();
+		const interval = setInterval(fetchData, 10000);
+
+		return () => clearInterval(interval);
 	}, []);
 
-	return { data, loading, error };
+	return { data, error };
 }
 

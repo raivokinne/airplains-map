@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-const MAX_PLANES = 5;
+const MAX_PLANES = 250;
 
 interface OpenSkyResponse {
 	time: number;
@@ -116,7 +116,7 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
 		}
 	}, [mapReady, planeData]);
 
-	return <div ref={mapRef} style={{ height: '600px', width: '100%' }}></div>;
+	return <div ref={mapRef} className="min-h-screen"></div>;
 };
 
 export default Map;
