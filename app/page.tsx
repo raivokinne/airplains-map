@@ -1,7 +1,11 @@
+"use client";
+
+import Map from "@/components/Map";
+
 export default function Home() {
 	return (
 		<>
-			<h1>Nigga</h1>
+			<Map/>
 		</>
 	)
 }
