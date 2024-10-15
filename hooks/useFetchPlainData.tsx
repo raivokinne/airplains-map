@@ -14,7 +14,13 @@ export default function useFetchPlainData() {
 			setError(null);
 
 			try {
-				const response = await fetch('https://opensky-network.org/api/states/all');
+				const response = await fetch('https://opensky-network.org/api/states/all', {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Basic ' + btoa('RaivoKinne:Rembo276@'),
+					},
+				});
 				const data = await response.json();
 				setData(data);
 			} catch (error) {
