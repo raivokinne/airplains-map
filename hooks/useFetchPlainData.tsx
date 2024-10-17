@@ -7,6 +7,7 @@ export default function useFetchPlainData() {
 	const [data, setData] = useState([]);
 	const [error, setError] = useState<Error | null>(null);
 
+
 	useEffect(() => {
 		async function fetchData() {
 			setError(null);
