@@ -113,36 +113,7 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
         }
     }, [mapReady, planeData]);
 
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setSelectedPlane(null);
-    };
-
-    return (
-        <>
-            <div ref={mapRef} style={{ height: '700px', width: '100%' }}></div>
-
-            {/* Overlay */}
-            <div className={`overlay ${isModalOpen ? 'show' : ''}`} onClick={closeModal}></div>
-
-            {/* Modal for plane details */}
-            <div className={`modal ${isModalOpen ? 'open' : ''}`}>
-                {selectedPlane && (
-                    <div className="modal-content">
-                        <span className="close" onClick={closeModal}>&times;</span>
-                        <h2>Plane Details</h2>
-                        <p><b>Callsign:</b> {selectedPlane[1] || 'N/A'}</p>
-                        <p><b>Country:</b> {selectedPlane[2]}</p>
-                        <p><b>Altitude:</b> {Math.round(selectedPlane[13] || selectedPlane[7] || 0)} m</p>
-                        <p><b>Velocity:</b> {Math.round(selectedPlane[9] || 0)} m/s</p>
-                        <p><b>Heading:</b> {Math.round(selectedPlane[10] || 0)}°</p>
-                        <p><b>On Ground:</b> {selectedPlane[8] ? 'Yes' : 'No'}</p>
-                        <p><b>Last Contact:</b> {new Date(selectedPlane[4] * 1000).toLocaleString()}</p>
-                    </div>
-                )}
-            </div>
-        </>
-    );
+    return <div ref={mapRef} style={{ height: '600px', width: '100%' }}></div>;
 };
 
 export default Map;
