@@ -46,7 +46,7 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
         if (typeof window !== 'undefined' && !mapInstanceRef.current && mapRef.current) {
             mapInstanceRef.current = L.map(mapRef.current).setView([0, 0], 3);
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                // attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'   mums vajag to hujnu?
             }).addTo(mapInstanceRef.current);
             setMapReady(true);
         }
