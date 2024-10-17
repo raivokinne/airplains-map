@@ -25,3 +25,12 @@ body {
     text-wrap: balance;
   }
 }
+
+.plane-icon img {
+  color: yellow;
+
+}
+
+.plane-icon:hover img {
+  filter: hue-rotate(180deg) brightness(1.5); /* Change color on hover */
+}
