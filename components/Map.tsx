@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import './Map.css';
+import './Map.css'; // Add relevant styles for the map and filter
 
 const MAX_PLANES = 250;
 
@@ -12,20 +12,20 @@ interface OpenSkyResponse {
 
 type PlaneData = [
     string,  // icao24
-    string | null,  // callsign
+        string | null,  // callsign
     string,  // origin_country
-    number | null,  // time_position
+        number | null,  // time_position
     number,  // last_contact
-    number | null,  // longitude
-    number | null,  // latitude
-    number | null,  // baro_altitude
+        number | null,  // longitude
+        number | null,  // latitude
+        number | null,  // baro_altitude
     boolean,  // on_ground
-    number | null,  // velocity
-    number | null,  // true_track
-    number | null,  // vertical_rate
-    number[] | null,  // sensors
-    number | null,  // geo_altitude
-    string | null,  // squawk
+        number | null,  // velocity
+        number | null,  // true_track
+        number | null,  // vertical_rate
+        number[] | null,  // sensors
+        number | null,  // geo_altitude
+        string | null,  // squawk
     boolean,  // spi
     number  // position_source
 ];
@@ -42,12 +42,15 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
     const [selectedPlane, setSelectedPlane] = useState<PlaneData | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    // Filter state
+    const [filterCountry, setFilterCountry] = useState<string>('');
+    const [minHeight, setMinHeight] = useState<number | string>('');
+    const [maxHeight, setMaxHeight] = useState<number | string>('');
+
     useEffect(() => {
         if (typeof window !== 'undefined' && !mapInstanceRef.current && mapRef.current) {
             mapInstanceRef.current = L.map(mapRef.current).setView([0, 0], 3);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                // attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'   mums vajag to hujnu?
-            }).addTo(mapInstanceRef.current);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstanceRef.current);
             setMapReady(true);
         }
         return () => {
@@ -60,11 +63,7 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
 
     const createPlaneIcon = (heading: number | null): L.DivIcon => {
         return L.divIcon({
-            html: `<svg width="20" height="20" viewBox="0 0 20 20">
-               <polygon points="10,0 20,20 10,15 0,20"
-                        fill="red" stroke="black"
-                        transform="rotate(${heading || 0}, 10, 10)" />
-             </svg>`,
+            html: `<img src="air-plane.png" style="width: 20px; height: 20px; transform: rotate(${heading || 0}deg); transform-origin: 50% 50%;" />`,
             className: 'plane-icon',
             iconSize: [20, 20],
             iconAnchor: [10, 10],
@@ -80,6 +79,11 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
         ] = state;
 
         if (!latitude || !longitude) return;
+
+        // Apply the filters: country and height
+        if (filterCountry && origin_country !== filterCountry) return;
+        const altitude = geo_altitude || baro_altitude || 0;
+        if ((minHeight && altitude < +minHeight) || (maxHeight && altitude > +maxHeight)) return;
 
         if (markersRef.current[planeId]) {
             markersRef.current[planeId].setLatLng([latitude, longitude])
@@ -111,22 +115,56 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
                 }
             });
         }
-    }, [mapReady, planeData]);
+    }, [mapReady, planeData, filterCountry, minHeight, maxHeight]);
 
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedPlane(null);
     };
 
+    const applyFilters = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // The map will automatically re-render based on the filter states
+    };
+
     return (
         <>
-            <div ref={mapRef} style={{ height: '700px', width: '100%' }}></div>
+            <form onSubmit={applyFilters} className="filter-form">
+                <label>
+                    Country:
+                    <input
+                        type="text"
+                        value={filterCountry}
+                        onChange={(e) => setFilterCountry(e.target.value)}
+                        placeholder="Enter country"
+                    />
+                </label>
+                <label>
+                    Min Height (m):
+                    <input
+                        type="number"
+                        value={minHeight}
+                        onChange={(e) => setMinHeight(e.target.value)}
+                        placeholder="Min height"
+                    />
+                </label>
+                <label>
+                    Max Height (m):
+                    <input
+                        type="number"
+                        value={maxHeight}
+                        onChange={(e) => setMaxHeight(e.target.value)}
+                        placeholder="Max height"
+                    />
+                </label>
+                <button type="submit">Apply Filters</button>
+            </form>
 
+            <div ref={mapRef} style={{ height: '700px', width: '100%' }}></div>
 
             <div className={`overlay ${isModalOpen ? 'show' : ''}`} onClick={closeModal}></div>
 
-
-            <div className={`modal ${isModalOpen ? 'open' : ''}  rounded-2xl bg-gradient-to-br from-slate-600 to-stone-800`}>
+            <div className={`modal ${isModalOpen ? 'open' : ''} rounded-2xl bg-gradient-to-br from-slate-600 to-stone-800`}>
                 {selectedPlane && (
                     <div className="modal-content text-white w-full">
                         <div className=''>

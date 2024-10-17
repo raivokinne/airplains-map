@@ -3,7 +3,7 @@
 import Map from "@/components/Map";
 import useFetchPlainData from "@/hooks/useFetchPlainData";
 
-export default function Home() {
+const HomePage = () => {
 	const { data, error } = useFetchPlainData();
 
 	if (error) return <p>Error: {error.message}</p>;
@@ -12,5 +12,7 @@ export default function Home() {
 		<>
 			<Map planeData={data} />
 		</>
-	)
-}
+	);
+};
+
+export default HomePage;

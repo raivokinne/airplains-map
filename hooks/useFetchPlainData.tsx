@@ -7,6 +7,7 @@ export default function useFetchPlainData() {
 	const [data, setData] = useState([]);
 	const [error, setError] = useState<Error | null>(null);
 
+
 	useEffect(() => {
 		async function fetchData() {
 			setError(null);
@@ -16,7 +17,7 @@ export default function useFetchPlainData() {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
-						'Authorization': 'Basic ' + btoa('RaivoKinne:Rembo276@'),
+						'Authorization': 'Basic ' + btoa('eaterz:9KSYgtbKB6@7aPY'),
 					},
 				});
 				const data = await response.json();
