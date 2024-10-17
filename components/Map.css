@@ -1,23 +1,37 @@
 .modal {
     position: fixed;
-    top: 0;
-    right: 0;
+    top: 20px;
+    right: -400px;
     width: 400px;
     height: 90%;
     background-color: white;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
     z-index: 1000;
-    display: none;
-    
+    display: block;
+    transition: right 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    opacity: 0;
 }
 
 .modal.open {
-    display: block;
-    margin: 20px;
+    right: 20px;
+    opacity: 1;
 }
 
 .modal-content {
     padding: 20px;
+    animation: fadeInContent 0.4s ease-in-out;
+}
+
+@keyframes fadeInContent {
+    0% {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .close {
@@ -37,8 +51,10 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.3);
     z-index: 999;
+    transition: opacity 0.4s ease-in-out;
 }
 
 .overlay.show {
     display: block;
+    opacity: 1;
 }
