@@ -12,20 +12,20 @@ interface OpenSkyResponse {
 
 type PlaneData = [
     string,  // icao24
-        string | null,  // callsign
+    string | null,  // callsign
     string,  // origin_country
-        number | null,  // time_position
+    number | null,  // time_position
     number,  // last_contact
-        number | null,  // longitude
-        number | null,  // latitude
-        number | null,  // baro_altitude
+    number | null,  // longitude
+    number | null,  // latitude
+    number | null,  // baro_altitude
     boolean,  // on_ground
-        number | null,  // velocity
-        number | null,  // true_track
-        number | null,  // vertical_rate
-        number[] | null,  // sensors
-        number | null,  // geo_altitude
-        string | null,  // squawk
+    number | null,  // velocity
+    number | null,  // true_track
+    number | null,  // vertical_rate
+    number[] | null,  // sensors
+    number | null,  // geo_altitude
+    string | null,  // squawk
     boolean,  // spi
     number  // position_source
 ];
@@ -170,13 +170,13 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
                         <div className=''>
                             <span className="close" onClick={closeModal}>&times;</span>
                             <h2>Plane Details</h2>
-                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>Callsign:</b> {selectedPlane[1] || 'N/A'}</p>
-                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>Country:</b> {selectedPlane[2]}</p>
-                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>Altitude:</b> {Math.round(selectedPlane[13] || selectedPlane[7] || 0)} m</p>
-                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>Velocity:</b> {Math.round(selectedPlane[9] || 0)} m/s</p>
-                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>Heading:</b> {Math.round(selectedPlane[10] || 0)}°</p>
-                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>On Ground:</b> {selectedPlane[8] ? 'Yes' : 'No'}</p>
-                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>Last Contact:</b> {new Date(selectedPlane[4] * 1000).toLocaleString()}</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>Callsign:</b> {selectedPlane[1] || 'N/A'}</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>Country:</b> {selectedPlane[2]}</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>Altitude:</b> {Math.round(selectedPlane[13] || selectedPlane[7] || 0)} m</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>Velocity:</b> {Math.round(selectedPlane[9] || 0)} m/s</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>Heading:</b> {Math.round(selectedPlane[10] || 0)}°</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>On Ground:</b> {selectedPlane[8] ? 'Yes' : 'No'}</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>Last Contact:</b> {new Date(selectedPlane[4] * 1000).toLocaleString()}</p>
                         </div>
                     </div>
                 )}
