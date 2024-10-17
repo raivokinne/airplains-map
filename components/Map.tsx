@@ -128,7 +128,7 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
 
             <div className={`modal ${isModalOpen ? 'open' : ''}  rounded-2xl bg-gradient-to-br from-slate-600 to-stone-800`}>
                 {selectedPlane && (
-                    <div className="modal-content  w-full">
+                    <div className="modal-content text-white w-full">
                         <div className=''>
                             <span className="close" onClick={closeModal}>&times;</span>
                             <h2>Plane Details</h2>
