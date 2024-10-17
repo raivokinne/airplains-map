@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import './Map.css'; // Custom CSS for the modal
+import './Map.css';
 
 const MAX_PLANES = 250;
 
@@ -39,8 +39,8 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
     const mapInstanceRef = useRef<L.Map | null>(null);
     const markersRef = useRef<{ [key: string]: L.Marker }>({});
     const [mapReady, setMapReady] = useState(false);
-    const [selectedPlane, setSelectedPlane] = useState<PlaneData | null>(null); // Store selected plane data
-    const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility
+    const [selectedPlane, setSelectedPlane] = useState<PlaneData | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         if (typeof window !== 'undefined' && !mapInstanceRef.current && mapRef.current) {
@@ -89,8 +89,8 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
                 icon: createPlaneIcon(true_track)
             }).addTo(mapInstanceRef.current)
                 .on('click', () => {
-                    setSelectedPlane(state); // Set the selected plane data
-                    setIsModalOpen(true); // Open the modal
+                    setSelectedPlane(state);
+                    setIsModalOpen(true);
                 });
         }
     };
@@ -122,22 +122,24 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
         <>
             <div ref={mapRef} style={{ height: '700px', width: '100%' }}></div>
 
-            {/* Overlay */}
+
             <div className={`overlay ${isModalOpen ? 'show' : ''}`} onClick={closeModal}></div>
 
-            {/* Modal for plane details */}
-            <div className={`modal ${isModalOpen ? 'open' : ''}`}>
+
+            <div className={`modal ${isModalOpen ? 'open' : ''}  rounded-2xl bg-gradient-to-br from-slate-600 to-stone-800`}>
                 {selectedPlane && (
-                    <div className="modal-content">
-                        <span className="close" onClick={closeModal}>&times;</span>
-                        <h2>Plane Details</h2>
-                        <p><b>Callsign:</b> {selectedPlane[1] || 'N/A'}</p>
-                        <p><b>Country:</b> {selectedPlane[2]}</p>
-                        <p><b>Altitude:</b> {Math.round(selectedPlane[13] || selectedPlane[7] || 0)} m</p>
-                        <p><b>Velocity:</b> {Math.round(selectedPlane[9] || 0)} m/s</p>
-                        <p><b>Heading:</b> {Math.round(selectedPlane[10] || 0)}°</p>
-                        <p><b>On Ground:</b> {selectedPlane[8] ? 'Yes' : 'No'}</p>
-                        <p><b>Last Contact:</b> {new Date(selectedPlane[4] * 1000).toLocaleString()}</p>
+                    <div className="modal-content  w-full">
+                        <div className=''>
+                            <span className="close" onClick={closeModal}>&times;</span>
+                            <h2>Plane Details</h2>
+                            <p><b>Callsign:</b> {selectedPlane[1] || 'N/A'}</p>
+                            <p><b>Country:</b> {selectedPlane[2]}</p>
+                            <p><b>Altitude:</b> {Math.round(selectedPlane[13] || selectedPlane[7] || 0)} m</p>
+                            <p><b>Velocity:</b> {Math.round(selectedPlane[9] || 0)} m/s</p>
+                            <p><b>Heading:</b> {Math.round(selectedPlane[10] || 0)}°</p>
+                            <p><b>On Ground:</b> {selectedPlane[8] ? 'Yes' : 'No'}</p>
+                            <p><b>Last Contact:</b> {new Date(selectedPlane[4] * 1000).toLocaleString()}</p>
+                        </div>
                     </div>
                 )}
             </div>
