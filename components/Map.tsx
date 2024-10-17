@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import './Map.css'; // Add relevant styles for the map and filter
+import './Map.css';
+import Filter from './Filter';
 
 const MAX_PLANES = 250;
 
@@ -12,20 +13,20 @@ interface OpenSkyResponse {
 
 type PlaneData = [
     string,  // icao24
-    string | null,  // callsign
+        string | null,  // callsign
     string,  // origin_country
-    number | null,  // time_position
+        number | null,  // time_position
     number,  // last_contact
-    number | null,  // longitude
-    number | null,  // latitude
-    number | null,  // baro_altitude
+        number | null,  // longitude
+        number | null,  // latitude
+        number | null,  // baro_altitude
     boolean,  // on_ground
-    number | null,  // velocity
-    number | null,  // true_track
-    number | null,  // vertical_rate
-    number[] | null,  // sensors
-    number | null,  // geo_altitude
-    string | null,  // squawk
+        number | null,  // velocity
+        number | null,  // true_track
+        number | null,  // vertical_rate
+        number[] | null,  // sensors
+        number | null,  // geo_altitude
+        string | null,  // squawk
     boolean,  // spi
     number  // position_source
 ];
@@ -41,16 +42,14 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
     const [mapReady, setMapReady] = useState(false);
     const [selectedPlane, setSelectedPlane] = useState<PlaneData | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    // Filter state
-    const [filterCountry, setFilterCountry] = useState<string>('');
-    const [minHeight, setMinHeight] = useState<number | string>('');
-    const [maxHeight, setMaxHeight] = useState<number | string>('');
+    const [filters, setFilters] = useState({ country: '', minHeight: null, maxHeight: null });
 
     useEffect(() => {
         if (typeof window !== 'undefined' && !mapInstanceRef.current && mapRef.current) {
             mapInstanceRef.current = L.map(mapRef.current).setView([0, 0], 3);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstanceRef.current);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(mapInstanceRef.current);
             setMapReady(true);
         }
         return () => {
@@ -80,10 +79,20 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
 
         if (!latitude || !longitude) return;
 
-        // Apply the filters: country and height
-        if (filterCountry && origin_country !== filterCountry) return;
         const altitude = geo_altitude || baro_altitude || 0;
-        if ((minHeight && altitude < +minHeight) || (maxHeight && altitude > +maxHeight)) return;
+
+        // Apply filters
+        if (
+            (filters.country && origin_country.toLowerCase() !== filters.country.toLowerCase()) ||
+            (filters.minHeight !== null && altitude < filters.minHeight) ||
+            (filters.maxHeight !== null && altitude > filters.maxHeight)
+        ) {
+            if (markersRef.current[planeId] && mapInstanceRef.current) {
+                mapInstanceRef.current.removeLayer(markersRef.current[planeId]);
+                delete markersRef.current[planeId];
+            }
+            return;
+        }
 
         if (markersRef.current[planeId]) {
             markersRef.current[planeId].setLatLng([latitude, longitude])
@@ -115,50 +124,20 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
                 }
             });
         }
-    }, [mapReady, planeData, filterCountry, minHeight, maxHeight]);
+    }, [mapReady, planeData, filters]);
 
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedPlane(null);
     };
 
-    const applyFilters = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        // The map will automatically re-render based on the filter states
+    const handleFilterChange = (country: string, minHeight: number | null, maxHeight: number | null) => {
+        setFilters({ country, minHeight, maxHeight });
     };
 
     return (
         <>
-            <form onSubmit={applyFilters} className="filter-form">
-                <label>
-                    Country:
-                    <input
-                        type="text"
-                        value={filterCountry}
-                        onChange={(e) => setFilterCountry(e.target.value)}
-                        placeholder="Enter country"
-                    />
-                </label>
-                <label>
-                    Min Height (m):
-                    <input
-                        type="number"
-                        value={minHeight}
-                        onChange={(e) => setMinHeight(e.target.value)}
-                        placeholder="Min height"
-                    />
-                </label>
-                <label>
-                    Max Height (m):
-                    <input
-                        type="number"
-                        value={maxHeight}
-                        onChange={(e) => setMaxHeight(e.target.value)}
-                        placeholder="Max height"
-                    />
-                </label>
-                <button type="submit">Apply Filters</button>
-            </form>
+            <Filter onApply={handleFilterChange} />
 
             <div ref={mapRef} style={{ height: '700px', width: '100%' }}></div>
 
@@ -170,13 +149,13 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
                         <div className=''>
                             <span className="close" onClick={closeModal}>&times;</span>
                             <h2>Plane Details</h2>
-                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>Callsign:</b> {selectedPlane[1] || 'N/A'}</p>
-                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>Country:</b> {selectedPlane[2]}</p>
-                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>Altitude:</b> {Math.round(selectedPlane[13] || selectedPlane[7] || 0)} m</p>
-                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>Velocity:</b> {Math.round(selectedPlane[9] || 0)} m/s</p>
-                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>Heading:</b> {Math.round(selectedPlane[10] || 0)}°</p>
-                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>On Ground:</b> {selectedPlane[8] ? 'Yes' : 'No'}</p>
-                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500 '><b>Last Contact:</b> {new Date(selectedPlane[4] * 1000).toLocaleString()}</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500'><b>Callsign:</b> {selectedPlane[1] || 'N/A'}</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500'><b>Country:</b> {selectedPlane[2]}</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500'><b>Altitude:</b> {Math.round(selectedPlane[13] || selectedPlane[7] || 0)} m</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500'><b>Velocity:</b> {Math.round(selectedPlane[9] || 0)} m/s</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500'><b>Heading:</b> {Math.round(selectedPlane[10] || 0)}°</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500'><b>On Ground:</b> {selectedPlane[8] ? 'Yes' : 'No'}</p>
+                            <p className='my-2 text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-500'><b>Last Contact:</b> {new Date(selectedPlane[4] * 1000).toLocaleString()}</p>
                         </div>
                     </div>
                 )}
