@@ -132,13 +132,13 @@ const Map: React.FC<MapProps> = ({ planeData }) => {
                         <div className=''>
                             <span className="close" onClick={closeModal}>&times;</span>
                             <h2>Plane Details</h2>
-                            <p><b>Callsign:</b> {selectedPlane[1] || 'N/A'}</p>
-                            <p><b>Country:</b> {selectedPlane[2]}</p>
-                            <p><b>Altitude:</b> {Math.round(selectedPlane[13] || selectedPlane[7] || 0)} m</p>
-                            <p><b>Velocity:</b> {Math.round(selectedPlane[9] || 0)} m/s</p>
-                            <p><b>Heading:</b> {Math.round(selectedPlane[10] || 0)}°</p>
-                            <p><b>On Ground:</b> {selectedPlane[8] ? 'Yes' : 'No'}</p>
-                            <p><b>Last Contact:</b> {new Date(selectedPlane[4] * 1000).toLocaleString()}</p>
+                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>Callsign:</b> {selectedPlane[1] || 'N/A'}</p>
+                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>Country:</b> {selectedPlane[2]}</p>
+                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>Altitude:</b> {Math.round(selectedPlane[13] || selectedPlane[7] || 0)} m</p>
+                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>Velocity:</b> {Math.round(selectedPlane[9] || 0)} m/s</p>
+                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>Heading:</b> {Math.round(selectedPlane[10] || 0)}°</p>
+                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>On Ground:</b> {selectedPlane[8] ? 'Yes' : 'No'}</p>
+                            <p className='text-slate-800 flex w-full items-center rounded-md p-3 transition-all bg-slate-400 '><b>Last Contact:</b> {new Date(selectedPlane[4] * 1000).toLocaleString()}</p>
                         </div>
                     </div>
                 )}
