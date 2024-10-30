@@ -26,8 +26,8 @@ const Filter: React.FC<FilterProps> = ({ onApply }) => {
     };
 
     return (
-        <form onSubmit={applyFilters} className="filter-form h-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-12 py-4 md:py-3 bg-slate-600 space-y-4 md:space-y-0">
-            <label htmlFor="country" className="w-full md:w-auto">
+        <form onSubmit={applyFilters} className="filter-form h-16 flex flex-row items-center justify-between px-12 bg-slate-600">
+            <label htmlFor="country">
                 <div className="relative">
                     <input
                         type="text"
@@ -65,9 +65,9 @@ const Filter: React.FC<FilterProps> = ({ onApply }) => {
                     />
                 </div>
             </label>
-            <div className="flex space-x-2 w-full md:w-auto justify-center md:ml-2">
-                <button type="submit" className="bg-slate-500 rounded-2xl py-2 px-4 hover:bg-slate-700 transition duration-300 w-full md:w-auto">Apply Filters</button>
-                <button type="button" onClick={resetFilters} className="bg-slate-500 rounded-2xl py-2 px-4 hover:bg-slate-700 transition duration-300 w-full md:w-auto">Reset Filters</button>
+            <div className="flex space-x-2">
+                <button type="submit" className='bg-slate-500 rounded-2xl py-2 px-4 hover:bg-slate-700 transition duration-300'>Apply Filters</button>
+                <button type="button" onClick={resetFilters} className='bg-slate-500 rounded-2xl py-2 px-4 hover:bg-slate-700 transition duration-300'>Reset Filters</button>
             </div>
         </form>
     );
